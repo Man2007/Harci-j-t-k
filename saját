@@ -1,0 +1,186 @@
+import os, random, math
+os.system("cls")
+
+d = random.randint
+
+class Karakter:
+    def __init__(self, nev, kaszt, fegyver):
+        #alap adatok
+        self.hp = 25
+        self.maxhp = 25
+        
+        #kepesseg adatok
+        self.Cooldown = 0
+        self.kepessegAktivIdo = 0
+        self.kepessegHasznalhato = True
+        self.kepessegAktiv = True
+        
+        self.nev = nev
+        self.kaszt = kaszt
+        self.fegyver = fegyver
+        
+        if kaszt == "harcos":
+            self.ero = d(1, 10) + 10
+            self.gyorsasag = d(2, 6) + 8
+            self.ugyesseg = d(3, 6)
+            self.kepesseg = "Csatakiáltás"
+            
+        elif kaszt == "tolvaj":
+            self.ero = d(3, 6)
+            self.gyorsasag = d(1, 10) + 10
+            self.ugyesseg = d(2, 6) + 8
+            self.kepesseg = "Hátbaszúrás"
+            
+        elif kaszt == "pap":
+            self.ero = d(2, 6) + 8
+            self.gyorsasag = d(3, 6)
+            self.ugyesseg = d(1, 10) + 10
+            self.kepesseg = "gyógyítás"
+    
+        self.kezdemenyezes = (self.gyorsasag - 10 or 0) + self.fegyver.SPD
+        self.vedekezes = (self.ugyesseg - 10 or 0) + self.fegyver.DEF 
+        self.tamadas = (self.ero - 10 or 0) + self.fegyver.ATT 
+    
+    #jatekosok kulombozo funkcioi:
+    def showHP(self):
+                 
+        if self.hp < 0:
+            self.hp = 0
+        HP = "["
+        HP += math.ceil(self.hp) * "\033[1;34;40mâ\033[00m" + math.ceil(self.maxhp - self.hp) * "-"
+        HP += f"] : {int(self.hp)}"
+        return HP
+    
+        
+    def Kepesseg(self, kaszt, target):
+        #ha cooldown van a kepessegen akkor ne tudjam hasznalni
+        if self.Cooldown != 0:
+            self.Cooldown -=1
+        else:
+            self.kepessegHasznalhato = True
+        
+        if self.kepessegHasznalhato:
+            self.kepessegAktiv = True
+            self.kepessegHasznalhato = False
+        
+        if self.kepessegAktiv:
+            if kaszt == "harcos":
+                self.kepessegAktivIdo = 3
+                self.fegyver.DMG += d(1,6)
+                self.vedekezes = round(self.vedekezes * 0.80)
+            
+            elif kaszt == "tolvaj":
+                Attack(self, target, False)
+           
+            elif kaszt == "pap":
+                self.hp += 5
+                if self.hp > self.maxhp:
+                    self.hp = self.maxhp
+            
+            elif kaszt == "berserker":
+                self.kepessegAktivIdo = 1
+                self.fegyver.DMG += d(2,6) + 5
+            
+            elif kaszt == "Ă­jjĂĄsz":
+                self.kepessegAktivIdo = 2
+                self.fegyver.DMG += d(1, 10)
+            
+            elif kaszt == "varĂĄzslĂł":
+                self.kepessegAktivIdo = 3
+                Attack(self, target, False)
+                
+            elif kaszt == "vezĂŠr":
+                self.kepessegAktivIdo = 3
+                self.fegyver.DMG = round(self.fegyver.DMG * 1.10)
+    
+class Fegyver:
+    def __init__(self, type):
+        if type == "kard":
+            self.type = "kard"
+            self.DMG = d(1, 6) + 3
+            self.SPD = 6
+            self.DEF = 8
+            self.ATT = 6
+            
+        elif type == "tĹr":
+            self.type = "tĹr"
+            self.DMG = d(1, 6)
+            self.SPD = 10
+            self.DEF = 3
+            self.ATT = 10
+            
+        elif type == "bot":
+            self.type = "bot"
+            self.DMG = d(1, 4)
+            self.SPD = 8
+            self.DEF = 10
+            self.ATT = 8
+            
+        elif type == "pallos":
+            self.type = "pallos"
+            self.DMG = d(2, 6)
+            self.SPD = 1
+            self.DEF = 1
+            self.ATT = 5
+        
+        elif type == "buzogĂĄny":
+            self.type = "buzogĂĄny"
+            self.DMG = d(2, 4) + 2
+            self.SPD = 4
+            self.DEF = 5
+            self.ATT = 4
+        
+        elif type == "nagykard":
+            self.type = "nagykard"
+            self.DMG = d(1, 10) + 2
+            self.SPD = 5
+            self.DEF = 7
+            self.ATT = 8
+        
+        elif type == "Ă­jj":
+            self.type = "Ă­jj"
+            self.DMG = d(1, 10) + 1
+            self.SPD = 7
+            self.DEF = 3
+            self.ATT = 6
+            
+        elif type == "varĂĄzsgĂśmb":
+            self.type = "varĂĄzsgĂśmb"
+            self.DMG = d(1, 10) + 3
+            self.SPD = 6
+            self.DEF = 5
+            self.ATT = 6
+            
+        elif type == "dobĂłkĂŠs":
+            self.type = "dobĂłkĂŠs"
+            self.DMG = d(2, 4) + 2
+            self.SPD = 8
+            self.DEF = 2
+            self.ATT = 4
+            
+        elif type == "balta":
+            self.type = "balta"
+            self.DMG = d(2, 6)
+            self.SPD = 1
+            self.DEF = 2
+            self.ATT = 6
+            
+        elif type == "szablya":
+            self.type = "szablya"
+            self.DMG = d(1, 10) + 1
+            self.SPD = 7
+            self.DEF = 4
+            self.ATT = 5
+            
+
+kasztList = ["harcos", "tolvaj", "pap", "berserker", "Ă­jjĂĄsz", "varĂĄzslĂł", "vezĂŠr"]     
+
+fegyverList = {
+    "harcos" : ["Kard", "Pallos", "BuzogĂĄny"],
+    "tolvaj" : ["Kard", "TĹr", "DobĂłkĂŠs"],
+    "pap" : ["TĹr", "Bot", "VarĂĄzsgĂśmb"],
+    "berserker": ["Nagykard", "Balta", "Pallos"],
+    "Ă­jjĂĄsz": ["Ăjj", "DobĂłkĂŠs"],
+    "varĂĄzslĂł": ["Bot", "VarĂĄzsgĂśmb"],
+    "vezĂŠr": ["Szablya"],   
+}

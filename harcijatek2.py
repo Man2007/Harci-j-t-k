@@ -3,7 +3,7 @@ os.system("cls")
 
 class Karakter:
     def __init__(self, nev, kaszt, fegyver):
-        #alap adatok
+        #hp
         self.hp = 25
         self.maxhp = 25
         
@@ -13,72 +13,46 @@ class Karakter:
         self.kepessegHasznalhato = True
         self.kepessegAktiv = True
         
-        #megadott adatok
         self.nev = nev
         self.kaszt = kaszt
         self.fegyver = fegyver
         
-        #kulombozo kasztok adatai
+        #kasztok
         if kaszt == "harcos":
             self.ero = d(1, 10) + 10
             self.gyorsasag = d(2, 6) + 8
             self.ugyesseg = d(3, 6)
-            self.kepesseg = "CsatakiĂĄltĂĄs"
+            self.kepesseg = "Csatakiáltás"
             
         elif kaszt == "tolvaj":
             self.ero = d(3, 6)
             self.gyorsasag = d(1, 10) + 10
             self.ugyesseg = d(2, 6) + 8
-            self.kepesseg = "HĂĄtbaszĂşrĂĄs"
+            self.kepesseg = "Hátbaszurás"
             
         elif kaszt == "pap":
             self.ero = d(2, 6) + 8
             self.gyorsasag = d(3, 6)
             self.ugyesseg = d(1, 10) + 10
-            self.kepesseg = "GyĂłgyĂ­tĂĄs"
+            self.kepesseg = ""
         
-        elif kaszt == "berserker":
-            self.ero = d(2, 10) + 5
-            self.gyorsasag = d(2, 6) + 5
-            self.ugyesseg = d(2, 6)
-            self.kepesseg = "VĂŠrszem" # ero += 2d6 + 5 a kovetkezo tamadasnal
-            
-        elif kaszt == "Ă­jjĂĄsz":
-            self.ero = d(3,6)
-            self.gyorsasag = d(3, 6) + 5
-            self.ugyesseg = d(2, 6)
-            self.kepesseg = "ĂsszpontosĂ­tĂĄs" # ero += 1d10 2 korig
-
-        elif kaszt == "varĂĄzslĂł":
-            self.ero = d(2, 6) + 5
-            self.gyorsasag = d(2,6)
-            self.ugyesseg = d(2, 10) + 5
-            self.kepesseg = "" 
-            
-        elif kaszt == "Vezér":
-            self.ero = d(1, 10) + 10
-            self.gyorsasag = d(1, 10) + 10
-            self.ugyesseg = d(2, 6) + 3
-            self.kepesseg = "VezĂŠrcsel" #a sebzes megno 10% al 3 koron keresztul
-
-        #fontos kezdo ertekek kiszamitasa
-        self.kezdemenyezes = (self.gyorsasag - 10 or 0) + self.fegyver.sebesség
-        self.vedekezes = (self.ugyesseg - 10 or 0) + self.fegyver.vedekezes 
-        self.tamadas = (self.ero - 10 or 0) + self.fegyver.tamadas
+        #kezdo ertekek
+        self.kezdemenyezes = (self.gyorsasag - 10 or 0) + self.fegyver.SPD
+        self.vedekezes = (self.ugyesseg - 10 or 0) + self.fegyver.DEF 
+        self.tamadas = (self.ero - 10 or 0) + self.fegyver.ATT 
     
-    #jatekosok kulombozo funkcioi:
+    #jatekosok funkcioi:
     def showHP(self):
                  
         if self.hp < 0:
             self.hp = 0
         HP = "["
-        HP += math.ceil(self.hp) * math.ceil(self.maxhp - self.hp) * "-"
+        HP += math.ceil(self.hp) * "\033[1;34;40\033[00m" + math.ceil(self.maxhp - self.hp) * "-"
         HP += f"] : {int(self.hp)}"
         return HP
     
         
     def Kepesseg(self, kaszt, target):
-        #ha cooldown van a kepessegen akkor ne tudjam hasznalni
         if self.Cooldown != 0:
             self.Cooldown -=1
         else:
@@ -101,22 +75,6 @@ class Karakter:
                 self.hp += 5
                 if self.hp > self.maxhp:
                     self.hp = self.maxhp
-            
-            elif kaszt == "berserker":
-                self.kepessegAktivIdo = 1
-                self.fegyver.DMG += d(2,6) + 5
-            
-            elif kaszt == "Ă­jjĂĄsz":
-                self.kepessegAktivIdo = 2
-                self.fegyver.DMG += d(1, 10)
-            
-            elif kaszt == "varĂĄzslĂł":
-                self.kepessegAktivIdo = 3
-                Attack(self, target, False)
-                
-            elif kaszt == "vezĂŠr":
-                self.kepessegAktivIdo = 3
-                self.fegyver.DMG = round(self.fegyver.DMG * 1.10)
     
 class Fegyver:
     def __init__(self, type):
@@ -127,8 +85,8 @@ class Fegyver:
             self.DEF = 8
             self.ATT = 6
             
-        elif type == "tőr":
-            self.type = "tőr"
+        elif type == "Tőr":
+            self.type = "Tőr"
             self.DMG = d(1, 6)
             self.SPD = 10
             self.DEF = 3
@@ -148,38 +106,28 @@ class Fegyver:
             self.DEF = 1
             self.ATT = 5
         
-        elif type == "buzogány":
-            self.type = "buzogány"
+        elif type == "Buzogány":
+            self.type = "Buzogány"
             self.DMG = d(2, 4) + 2
             self.SPD = 4
             self.DEF = 5
             self.ATT = 4
-            
-        elif type == "Szablya":
-            self.type = "szablya"
-            self.DMG = d(1, 10) + 3
-            self.sebesseg = 5
-            self.DEF = 3
-            self.ATT = 7
+        
+        elif type == "nagykard":
+            self.type = "nagykard"
+            self.Sebzés = d(1, 10) + 2
+            self.sebb= 5
+            self.DEF = 7
+            self.ATT = 8
+    
 
-        elif type == "Varázslás":
-            self.type = "varázslás"
-            self.DMG = d(1, 10) + 3
-            self.sebesseg = 7
-            self.DEF = 5
-            self.ATT = 7
-            
-
-kasztList = ["harcos", "tolvaj", "pap","varázsló", "vezér"]     
+kasztList = ["harcos", "tolvaj", "pap"]     
 
 fegyverList = {
-    "harcos" : ["Kard","Pallos","Buzogány"],
-    "tolvaj" : ["Kard","Tőr"],
-    "pap" : ["Tőr","Bot"],
-    "varázsló": ["Bot","Varázslás"],
-    "vezér": ["Szablya"]   
+    "harcos" : ["Kard", "Pallos", "Buzogány"],
+    "tolvaj" : ["Kard", "Tőr"],
+    "pap" : ["Tőr", "Bot"],
 }
-
 
 def d(db, num):
     pontszam = 0
@@ -197,8 +145,6 @@ def Attack(self, target, ellenallas):
         else:
             if self.kaszt == "tolvaj":
                 target.hp -= self.fegyver.DMG * 1.5
-            if self.kaszt == "varázslás":
-                target.hp -= 2
 
 def DeathCheck(p1, p2):
     if p1.hp <= 0:
@@ -213,29 +159,21 @@ def adatlap(player):
     
     f.write(f"{player.nev} adatai: \n")
     f.write(f"Kaszt: {player.kaszt}\n")
-    f.write(f"Tőr: {player.ero} pont\n")
-    f.write(f"GyorsasĂĄg: {player.gyorsasag} pont\n")
-    f.write(f"ĂgyessĂŠg: {player.ugyesseg} pont\n")
+    f.write(f"Erő: {player.ero} pont\n")
+    f.write(f"Gyorsaság: {player.gyorsasag} pont\n")
+    f.write(f"Ugyesség: {player.ugyesseg} pont\n")
     f.write(f"Fegyver: {player.fegyver.type} pont\n")
-    f.write(f"Fegyver DMG: {player.fegyver.DMG} pont\n")
-    f.write(f"Fegyver SPD: {player.fegyver.SPD} pont\n")
-    f.write(f"Fegyver DEF: {player.fegyver.DEF} pont\n")
-    f.write(f"Fegyver ATT: {player.fegyver.ATT} pont\n")
-    f.write(f"KĂŠpessĂŠg: {player.kepesseg}\n")
-    f.write(20*"#" + "\n")
-    f.write(20*"#")
-    
     f.close()
  
 def start():
-    jatekosSzam = input("Hány játékos játszik (1 vagy 2): ")
+    jatekosSzam = input("Hány Játékos Játszik (1 vagy 2): ")
     if jatekosSzam == "1":
         setup(1)
     elif jatekosSzam == "2":
         setup(2)
     else:
         os.system("cls")
-        print("Helytelen bevitel!")
+        print("Helytelen bevitt érték!")
         start()
 
 def setup(jatekosSzam):
@@ -247,11 +185,11 @@ def setup(jatekosSzam):
             
         print("-" * 20)
             
-        print("Válasz kasztok: ")
+        print("Válaszható kasztok: ")
         for kaszt in kasztList:
             print("-" + kaszt)
         while True:
-            ValasztottKaszt = input("Melyik kasztot választod: ")
+            ValasztottKaszt = input("Melyik kasztot Választod: ")
             if ValasztottKaszt == "" or ValasztottKaszt not in kasztList:
                 print("Helytelen adat!")
                 continue
@@ -264,7 +202,7 @@ def setup(jatekosSzam):
         for fegyver in fegyverList[ValasztottKaszt.lower()]:
             print("-" + fegyver)
         while True:
-            ValasztottFegyver = input("Melyik fegyvert választod: ")
+            ValasztottFegyver = input("Melyik fegyvert Választod: ")
             if ValasztottFegyver == "" or ValasztottFegyver.capitalize() not in fegyverList[ValasztottKaszt.lower()]:
                 print("Helytelen adat!")
                 continue
@@ -287,11 +225,11 @@ def setup(jatekosSzam):
             
             print("-" * 20)
             
-            print("Válasz kasztok: ")
+            print("Választható kasztok: ")
             for kaszt in kasztList:
                 print("-" + kaszt)
             while True:
-                ValasztottKaszt = input("Melyik fegyvert válszatod?: ")
+                ValasztottKaszt = input("Melyik kasztot választod: ")
                 if ValasztottKaszt == "" or ValasztottKaszt not in kasztList:
                     print("Helytelen adat!")
                     continue
@@ -303,7 +241,7 @@ def setup(jatekosSzam):
             for fegyver in fegyverList[ValasztottKaszt.lower()]:
                 print("-" + fegyver)
             while True:
-                ValasztottFegyver = input("Melyik fegyvert válszatod?: ")
+                ValasztottFegyver = input("Melyik fegyvert választod: ")
                 if ValasztottFegyver == "" or ValasztottFegyver.capitalize() not in fegyverList[ValasztottKaszt.lower()]:
                     print("Helytelen adat!")
                     continue
@@ -340,31 +278,25 @@ def Game(jatekosok):
             #megnezzuk hogy meghalt e valamelyik jatekos
             if Jatekos1.hp <= 0:
                 print("A játéknak vége!")
-                print(Jatekos2.nev + " a gyĹztes!")
+                print(Jatekos2.nev + " a Győztes!")
                 break
             elif Jatekos2.hp <= 0:
                 print("A játéknak vége!")
-                print(Jatekos1.nev + " a győztes!")
+                print(Jatekos1.nev + " a Győztes!")
                 break
             #lepesek bekerese
-            Jatekos1Lepes = input(f'{Jatekosok[0].nev}! Mit cselekszel? (Támadás, Védekezés, Képesség): ')
+            Jatekos1Lepes = input(f'{Jatekosok[0].nev}! Mit cselekszel? (Támadás, Védekezés): ')
             
-            Jatekos2Lepes = input(f'{Jatekosok[1].nev}! Mit cselekszel? (Támadás, Védekezés, Képesség): ')
+            Jatekos2Lepes = input(f'{Jatekosok[1].nev}! Mit cselekszel? (Támadás, Védekezés): ')
             #lepesek kivitelezese
-            if Jatekos1Lepes.capitalize() == "Támadás" and Jatekos2Lepes.capitalize() == "Támadsá":
+            if Jatekos1Lepes.capitalize() == "Támadás" and Jatekos2Lepes.capitalize() == "Támadás":
                 Attack(Jatekos1, Jatekos2, True)
                 if DeathCheck(Jatekos1, Jatekos2):
                     continue
                 Attack(Jatekos2, Jatekos1, True)
             
-            elif Jatekos1Lepes.capitalize() == "Támadás" and Jatekos2Lepes.capitalize() == "Védekezéss":
+            elif Jatekos1Lepes.capitalize() == "Támadás" and Jatekos2Lepes.capitalize() == "Védekezés":
                 pass
-            
-            elif Jatekos1Lepes.capitalize() == "Támadás" and Jatekos2Lepes.capitalize() == "Képesség":
-                Attack(Jatekos1, Jatekos2, True)
-                if DeathCheck(Jatekos1, Jatekos2):
-                    continue
-                Jatekos2.Kepesseg(Jatekos2.kaszt, Jatekos1)
             
             elif Jatekos1Lepes.capitalize() == "Védekezés" and Jatekos2Lepes.capitalize() == "Támadás":
                 pass
@@ -372,21 +304,11 @@ def Game(jatekosok):
             elif Jatekos1Lepes.capitalize() == "Védekezés" and Jatekos2Lepes.capitalize() == "Védekezés":
                 pass
             
-            elif Jatekos1Lepes.capitalize() == "Védekezés" and Jatekos2Lepes.capitalize() == "Képesség":
-                Jatekos2.Kepesseg(Jatekos2.kaszt, Jatekos1)
-            
-            elif Jatekos1Lepes.capitalize() == "Képesség" and Jatekos2Lepes.capitalize() == "Támadás":
-                Jatekos1.Kepesseg(Jatekos1.kaszt, Jatekos2)
+            elif Jatekos2Lepes.capitalize() == "Támadás":
                 Attack(Jatekos2, Jatekos1, True)
             
-            elif Jatekos1Lepes.capitalize() == "Képesség" and Jatekos2Lepes.capitalize() == "Védekezés":
+            elif  Jatekos2Lepes.capitalize() == "Védekezés":
                 Jatekos1.Kepesseg(Jatekos1.kaszt, Jatekos2)
-            
-            elif Jatekos1Lepes.capitalize() == "Képesség" and Jatekos2Lepes.capitalize() == "képesség":
-                Jatekos1.Kepesseg(Jatekos1.kaszt, Jatekos2)
-                if DeathCheck(Jatekos1, Jatekos2):
-                    continue
-                Jatekos2.Kepesseg(Jatekos2.kaszt, Jatekos1)
                 
     else:
         while True:
@@ -396,28 +318,28 @@ def Game(jatekosok):
             print(Jatekos2.nev + f" {Jatekos2.showHP()}")
             #megnezzuk hogy meghalt e valamelyik jatekos
             if Jatekos1.hp <= 0:
-                print("A Játéknak vége!")
-                print(Jatekos2.nev + " a gyĹztes!")
+                print("A Játéknak vége")
+                print(Jatekos2.nev + " a győztes!")
                 break
             elif Jatekos2.hp <= 0:
-                print("A Játéknak vége!")
+                print("A Játéknak vége")
                 print(Jatekos1.nev + " a győztes!")
                 break
-            #lepesek bekerese
-            Jatekos1Lepes = input(f'{Jatekosok[0].nev}! Mit cselekszel? (Támadás, Védekezés, Képesség): ')
+            #lepesek
+            Jatekos1Lepes = input(f'{Jatekosok[0].nev}! Mit cselekszel? (Támadás, Védekezés): ')
             
-            Jatekos2Lepes = random.choice(["Támadás", "Vádekezés", "Képesség"])
-            #lepesek kivitelezese
-            if Jatekos1Lepes.capitalize() == "TÁ,adás" and Jatekos2Lepes.capitalize() == "Támadás":
+            Jatekos2Lepes = random.choice(["Támadás", "Védekezés"])
+            #lepesek
+            if Jatekos1Lepes.capitalize() == "Támadás" and Jatekos2Lepes.capitalize() == "Támadás":
                 Attack(Jatekos1, Jatekos2, True)
                 if DeathCheck(Jatekos1, Jatekos2):
                     continue
                 Attack(Jatekos2, Jatekos1, True)
             
-            elif Jatekos1Lepes.capitalize() == "TĂĄmadĂĄs" and Jatekos2Lepes.capitalize() == "Védekezés":
+            elif Jatekos1Lepes.capitalize() == "Támadás" and Jatekos2Lepes.capitalize() == "Védekezés":
                 pass
             
-            elif Jatekos1Lepes.capitalize() == "TĂĄmadĂĄs" and Jatekos2Lepes.capitalize() == "Képesség":
+            elif Jatekos1Lepes.capitalize() == "Támadás":
                 Attack(Jatekos1, Jatekos2, True)
                 if DeathCheck(Jatekos1, Jatekos2):
                     continue
@@ -429,20 +351,12 @@ def Game(jatekosok):
             elif Jatekos1Lepes.capitalize() == "Védekezés" and Jatekos2Lepes.capitalize() == "Védekezés":
                 pass
             
-            elif Jatekos1Lepes.capitalize() == "Védekezés" and Jatekos2Lepes.capitalize() == "Képesség":
+            elif Jatekos1Lepes.capitalize() == "Védekezés":
                 Jatekos2.Kepesseg(Jatekos2.kaszt, Jatekos1)
             
-            elif Jatekos1Lepes.capitalize() == "Képesség" and Jatekos2Lepes.capitalize() == "Támadás":
-                Jatekos1.Kepesseg(Jatekos1.kaszt, Jatekos2)
+            elif Jatekos2Lepes.capitalize() == "Támadás":
                 Attack(Jatekos2, Jatekos1, True)
             
-            elif Jatekos1Lepes.capitalize() == "Képesség" and Jatekos2Lepes.capitalize() == "Védekezés":
-                Jatekos1.Kepesseg(Jatekos1.kaszt, Jatekos2)
-            
-            elif Jatekos1Lepes.capitalize() == "Képesség" and Jatekos2Lepes.capitalize() == "Képesség":
-                Jatekos1.Kepesseg(Jatekos1.kaszt, Jatekos2)
-                if DeathCheck(Jatekos1, Jatekos2):
-                    continue
-                Jatekos2.Kepesseg(Jatekos2.kaszt, Jatekos1)
-                
+            elif Jatekos2Lepes.capitalize() == "Védekezés":
+                Jatekos1.Kepesseg(Jatekos1.kaszt, Jatekos2)    
 start()
