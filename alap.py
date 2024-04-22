@@ -4,7 +4,7 @@ os.system("cls")
 
 kasztList = ["harcos", "tolvaj", "pap"]    
 harcos = {
-            "tuljadonság":[erő]
+            "tuljadonság":["ero",]
         }
 
 ero = random.randint(1,10)+10
