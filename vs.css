@@ -1,0 +1,40 @@
+.vs{
+    height: 300px;
+    width: 300px;
+    opacity: 0.5;
+    animation: faulty-flicker 2s linear infinite;
+    box-shadow: 0 4px 8px 0 rgba(73, 73, 73, 0.884), 0 6px 20px 0 rgba(73, 73, 73, 0.884);
+    border-radius: 100%;
+    border: 10px solid rgba(73, 73, 73, 0.884);
+  }
+  
+  @keyframes faulty-flicker {
+    0% {
+      opacity: 0.1;
+    }
+    2% {
+      opacity: 0.1;
+    }
+    4% {
+      opacity: 0.5;
+    }
+    19% {
+      opacity: 0.5;
+    }
+    21% {
+      opacity: 0.1;
+    }
+    23% {
+      opacity: 1;
+    }
+    80% {
+      opacity: 0.5;
+    }
+    83% {
+      opacity: 0.4;
+    }
+  
+    87% {
+      opacity: 1;
+    }
+  }

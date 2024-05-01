@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="style.css">
+  <title>Start</title>
+  <style>
+    body{
+      background: linear-gradient(520deg, #5c92c4, #c45c5c)
+    }
+
+    #box {
+  display: flex;
+}
+.gradient-border {
+  --borderWidth: 3px;
+  background: #1D1F20;
+  position: relative;
+}
+.gradient-border {
+  --borderWidth: 3px;
+  background: #1D1F20;
+  position: relative;
+  border-radius: var(--borderWidth);
+}
+.gradient-border:after {
+  content: '';
+  position: absolute;
+  top: calc(-1 * var(--borderWidth));
+  left: calc(-1 * var(--borderWidth));
+  height: calc(100% + var(--borderWidth) * 2);
+  width: calc(100% + var(--borderWidth) * 2);
+  background: linear-gradient(520deg, #5c92c4, #5c92c4, #5c92c4, #5c92c4, #c45c5c, #c45c5c, #c45c5c, #c45c5c);
+  z-index: -1;
+  animation: animatedgradient 3s ease alternate infinite;
+  background-size: 370% 370%;
+}
+
+
+@keyframes animatedgradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+  </style>
+</head>
+<body class="gradient-border" id="box">
+
+<div id="startcont" class="position-absolute z-3 position-absolute p-5 rounded-3">
+    <button id="startbutton" class='glowing-btn'><span class='glowing-txt'>S<span class='faulty-letter'>T</span>A<span class="faulty-letter">R</span>T</span></button>
+</div>
+
+  <div class="container position-absolute z-1 position-absolute p-5 rounded-3">
+    <div class="box">
+      <span style="--i: 1">
+        <i>Harci</i>
+        <i>Játék</i>
+      </span>
+      <span style="--i: 2">
+        <i>Harci</i>
+        <i>Játék</i>
+      </span>
+      <span style="--i: 3">
+        <i>Harci</i>
+        <i>Játék</i>
+      </span>
+      <span style="--i: 4">
+        <i>Harci</i>  
+        <i>Játék</i>
+      </span>
+      <span style="--i: 5">
+        <i>Harci</i>
+        <i>Játék</i>
+      </span>
+      <span style="--i: 6">
+        <i>Harci</i>
+        <i>Játék</i>
+      </span>
+      <span style="--i: 7">
+        <i>Harci</i>
+        <i>Játék</i>
+      </span>
+      <span style="--i: 8">
+        <i>Harci</i>
+        <i>Játék</i>
+      </span>
+      <span style="--i: 9">
+        <i>Harci</i>
+        <i>Játék</i>
+      </span>
+      <span style="--i: 10">
+        <i>Harci</i>
+        <i>Játék</i>
+      </span>
+      <span style="--i: 11">
+        <i>Harci</i>
+        <i>Játék</i>
+      </span>
+      <span style="--i: 12">
+        <i>Harci</i>
+        <i>Játék</i>
+      </span>
+      <span style="--i: 13">
+        <i>Harci</i>
+        <i>Játék</i>
+      </span>
+      <span style="--i: 14">
+        <i>Harci</i>
+        <i>Játék</i>
+      </span>
+      <span style="--i: 15">
+        <i>Harci</i>
+        <i>Játék</i>
+      </span>
+      <span style="--i: 16">
+        <i>Harci</i>
+        <i>Játék</i>
+      </span>
+    </div>
+  </div>
+  <script>
+    const battle_btn = document.getElementById('startbutton');
+    battle_btn.addEventListener('click', ()=>{
+        window.location = 'character.html';
+    })
+</script>
+</body>
+</html>
